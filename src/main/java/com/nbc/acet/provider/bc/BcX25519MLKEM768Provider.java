@@ -2,30 +2,29 @@ package com.nbc.acet.provider.bc;
 
 import java.security.spec.AlgorithmParameterSpec;
 
-import org.bouncycastle.jcajce.spec.MLKEMParameterSpec;
-
+import com.nbc.acet.api.Algorithm;
 import com.nbc.acet.api.ParameterSet;
 import com.nbc.acet.provider.bc.base.BcKemProviderBase;
 
-public class BcMlKem768Provider extends BcKemProviderBase {
+public class BcX25519MLKEM768Provider extends BcKemProviderBase {
 
     @Override
-    public String algorithm() {
-        return "ML-KEM";
+    public Algorithm algorithm() {
+        return Algorithm.X25519_ML_KEM;
     }
 
     @Override
     public ParameterSet parameterSet() {
-        return ParameterSet.ML_KEM_768;
+        return ParameterSet.X25519MLKEM768;
     }
 
     @Override
     protected String kemAlgorithm() {
-        return "ML-KEM";
+        return "X25519-MLKEM768"; 
     }
 
     @Override
     protected AlgorithmParameterSpec kemSpec() {
-        return MLKEMParameterSpec.ml_kem_768;
+        return null;
     }
 }

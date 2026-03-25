@@ -1,35 +1,37 @@
 package com.nbc.acet.provider.bc;
 
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.RSAKeyGenParameterSpec;
 
+import org.bouncycastle.jce.ECNamedCurveTable;
+
+import com.nbc.acet.api.Algorithm;
 import com.nbc.acet.api.ParameterSet;
 import com.nbc.acet.provider.bc.base.BcSignatureProviderBase;
 
-public class BcRsa2048Provider extends BcSignatureProviderBase {
+public class BcECDSA32Provider extends BcSignatureProviderBase {
 
     @Override
-    public String algorithm() {
-        return "RSA";
+    public Algorithm algorithm() {
+        return Algorithm.ECDSA;
     }
 
     @Override
     public ParameterSet parameterSet() {
-        return ParameterSet.RSA_2048;
+        return ParameterSet.ECDSA_P256;
     }
 
     @Override
     protected String keyAlgorithm() {
-        return "RSA";
+        return "EC";
     }
 
     @Override
     protected String signatureAlgorithm() {
-        return "SHA256withRSA";
+        return "SHA256withECDSA";
     }
 
     @Override
     protected AlgorithmParameterSpec keySpec() {
-        return new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
+        return ECNamedCurveTable.getParameterSpec("P-256");
     }
 }

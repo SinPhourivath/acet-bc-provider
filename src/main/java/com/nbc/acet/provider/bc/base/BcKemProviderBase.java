@@ -32,7 +32,7 @@ public abstract class BcKemProviderBase implements CryptoOperationProvider {
     protected abstract AlgorithmParameterSpec kemSpec();
 
     @Override
-    public String providerId() {
+    public String provider() {
         return "BouncyCastle-1.83";
     }
 
@@ -44,7 +44,14 @@ public abstract class BcKemProviderBase implements CryptoOperationProvider {
     @Override
     public KeyPairResult generateKeyPair() throws Exception {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance(kemAlgorithm(), "BC");
-        kpg.initialize(kemSpec());
+        
+        // Only initialize if a spec is actually provided
+        // X25519MLKEM786 doesn't need kemSpec
+        AlgorithmParameterSpec spec = kemSpec();
+        if (spec != null) {
+            kpg.initialize(spec);
+        }
+        
         KeyPair kp = kpg.generateKeyPair();
         return new KeyPairResult(
                 kp.getPublic().getEncoded(),

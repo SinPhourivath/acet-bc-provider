@@ -32,7 +32,7 @@ public abstract class BcKeyAgreementProviderBase implements CryptoOperationProvi
     protected abstract AlgorithmParameterSpec keySpec();
 
     @Override
-    public String providerId() {
+    public String provider() {
         return "BouncyCastle-1.83";
     }
 

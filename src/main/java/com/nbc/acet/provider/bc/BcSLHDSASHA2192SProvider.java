@@ -4,14 +4,15 @@ import java.security.spec.AlgorithmParameterSpec;
 
 import org.bouncycastle.jcajce.spec.SLHDSAParameterSpec;
 
+import com.nbc.acet.api.Algorithm;
 import com.nbc.acet.api.ParameterSet;
 import com.nbc.acet.provider.bc.base.BcSignatureProviderBase;
 
-public class BcSlhDsaSha2192SProvider extends BcSignatureProviderBase {
+public class BcSLHDSASHA2192SProvider extends BcSignatureProviderBase {
 
     @Override
-    public String algorithm() {
-        return "SLH-DSA";
+    public Algorithm algorithm() {
+        return Algorithm.SLH_DSA;
     }
 
     @Override

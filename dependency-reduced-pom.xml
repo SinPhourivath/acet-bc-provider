@@ -4,7 +4,7 @@
   <groupId>com.nbc.acet</groupId>
   <artifactId>acet-bc-provider</artifactId>
   <name>Archetype - acet-bc-provider</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.nbc.acet</groupId>
       <artifactId>acet-crypto-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>1.0.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
