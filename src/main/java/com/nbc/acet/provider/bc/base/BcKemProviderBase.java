@@ -64,7 +64,8 @@ public abstract class BcKemProviderBase implements CryptoOperationProvider {
                 .generatePublic(new X509EncodedKeySpec(publicKey));
 
         KeyGenerator keyGen = KeyGenerator.getInstance(kemAlgorithm(), "BC");
-        keyGen.init(new KEMGenerateSpec(pub, "Secret"));
+        // withNoKdf(): bypass default KDF-3/SHA-256 to return raw FIPS 203 shared secret K
+        keyGen.init(new KEMGenerateSpec.Builder(pub, "Secret", 256).withNoKdf().build());
         SecretKeyWithEncapsulation encapsulated =
                 (SecretKeyWithEncapsulation) keyGen.generateKey();
 
@@ -79,7 +80,8 @@ public abstract class BcKemProviderBase implements CryptoOperationProvider {
                 .generatePrivate(new PKCS8EncodedKeySpec(privateKey));
 
         KeyGenerator keyGen = KeyGenerator.getInstance(kemAlgorithm(), "BC");
-        keyGen.init(new KEMExtractSpec(priv, encapsulation, "Secret"));
+        // withNoKdf(): bypass default KDF-3/SHA-256 to return raw FIPS 203 shared secret K
+        keyGen.init(new KEMExtractSpec.Builder(priv, encapsulation, "Secret", 256).withNoKdf().build());
         SecretKey secret = keyGen.generateKey();
 
         return secret.getEncoded();
