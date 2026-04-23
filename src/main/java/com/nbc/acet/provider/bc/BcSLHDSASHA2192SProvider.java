@@ -34,4 +34,9 @@ public class BcSLHDSASHA2192SProvider extends BcSignatureProviderBase {
     protected AlgorithmParameterSpec keySpec() {
         return SLHDSAParameterSpec.slh_dsa_sha2_192s;
     }
+
+    @Override
+    protected boolean signatureSupportsContext() {
+        return true;
+    }
 }

@@ -34,4 +34,9 @@ public class BcMLDSA65Provider extends BcSignatureProviderBase {
     protected AlgorithmParameterSpec keySpec() {
         return MLDSAParameterSpec.ml_dsa_65;
     }
+
+    @Override
+    protected boolean signatureSupportsContext() {
+        return true;
+    }
 }

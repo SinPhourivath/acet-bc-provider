@@ -13,6 +13,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jcajce.spec.ContextParameterSpec;
 
 import com.nbc.acet.api.AlgorithmFamily;
 import com.nbc.acet.api.CryptoOperationProvider;
@@ -30,6 +31,10 @@ public abstract class BcSignatureProviderBase implements CryptoOperationProvider
     protected abstract String signatureAlgorithm();
 
     protected abstract AlgorithmParameterSpec keySpec();
+
+    protected boolean signatureSupportsContext() {
+        return false;
+    }
 
     @Override
     public String provider() {
@@ -62,6 +67,27 @@ public abstract class BcSignatureProviderBase implements CryptoOperationProvider
     }
 
     @Override
+    public byte[] sign(byte[] message, byte[] privateKey, byte[] context) throws Exception {
+        if ((context == null || context.length == 0) && !signatureSupportsContext()) {
+            return sign(message, privateKey);
+        }
+        if (context != null && context.length > 0 && !signatureSupportsContext()) {
+            throw new UnsupportedOperationException(
+                    provider() + " does not support sign() with context");
+        }
+
+        PrivateKey pk = KeyFactory.getInstance(keyAlgorithm(), "BC")
+                .generatePrivate(new PKCS8EncodedKeySpec(privateKey));
+        Signature sig = Signature.getInstance(signatureAlgorithm(), "BC");
+        sig.initSign(pk);
+        if (signatureSupportsContext()) {
+            sig.setParameter(new ContextParameterSpec(context != null ? context : new byte[0]));
+        }
+        sig.update(message);
+        return sig.sign();
+    }
+
+    @Override
     public boolean verify(byte[] message, byte[] signature,
             byte[] publicKey) throws Exception {
         PublicKey pk = KeyFactory.getInstance(keyAlgorithm(), "BC")
@@ -74,5 +100,36 @@ public abstract class BcSignatureProviderBase implements CryptoOperationProvider
         } catch (SignatureException e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean verify(byte[] message, byte[] signature,
+            byte[] publicKey, byte[] context) throws Exception {
+        if ((context == null || context.length == 0) && !signatureSupportsContext()) {
+            return verify(message, signature, publicKey);
+        }
+        if (context != null && context.length > 0 && !signatureSupportsContext()) {
+            throw new UnsupportedOperationException(
+                    provider() + " does not support verify() with context");
+        }
+
+        PublicKey pk = KeyFactory.getInstance(keyAlgorithm(), "BC")
+                .generatePublic(new X509EncodedKeySpec(publicKey));
+        Signature sig = Signature.getInstance(signatureAlgorithm(), "BC");
+        sig.initVerify(pk);
+        if (signatureSupportsContext()) {
+            sig.setParameter(new ContextParameterSpec(context != null ? context : new byte[0]));
+        }
+        sig.update(message);
+        try {
+            return sig.verify(signature);
+        } catch (SignatureException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean supportsContext() {
+        return signatureSupportsContext();
     }
 }
